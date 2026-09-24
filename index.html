@@ -40,18 +40,20 @@
             </div>
 
             <div class="field">
-                <label for="heightInput" id="heightLabel">Рост и луны</label>
-                <div class="input-row">
-                    <input type="number" id="heightInput" min="45" max="100" step="1" value="75" />
-                    <span class="unit" id="heightUnit">%</span>
+                <div class="field-head">
+                    <label for="heightInput" id="heightLabel">Рост и луны</label>
                     <span class="mode-toggle">
-                        <button type="button" class="mode-btn active" id="modePercent" aria-pressed="true">%</button>
-                        <button type="button" class="mode-btn" id="modeMoon" aria-pressed="false">❍</button>
+                        <button type="button" class="mode-btn" id="modePercent" aria-pressed="false">%</button>
+                        <button type="button" class="mode-btn active" id="modeMoon" aria-pressed="true">❍</button>
                     </span>
+                </div>
+                <div class="input-row">
+                    <input type="text" inputmode="decimal" id="heightInput" value="12" />
+                    <span class="unit" id="heightUnit">❍</span>
                 </div>
             </div>
 
-            <div class="field wide">
+            <div class="field">
                 <label for="mouthInput"><span id="mouthLabel">Места во рту</span> <span class="hint" id="mouthHint"></span></label>
                 <div class="input-row">
                     <input type="number" id="mouthInput" min="1" max="5" step="1" value="2" disabled />
