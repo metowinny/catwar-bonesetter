@@ -10,7 +10,7 @@
     const healthInput = $('healthInput'), heightInput = $('heightInput'), mouthInput = $('mouthInput');
     const manualCheck = $('manualCheck'), resultDiv = $('result'), mouthHint = $('mouthHint');
     const heightUnit = $('heightUnit'), modePercent = $('modePercent'), modeMoon = $('modeMoon');
-    let currentMode = 'percent'; // 'percent' или 'moon'
+    let currentMode = 'moon'; // 'percent' или 'moon' — по умолчанию луны
 
     // ---------- Тексты ----------
     function plural(n, forms) {
@@ -29,10 +29,9 @@
             : '';
         $('thanks').hidden = !T.thanksUrl;
         $('healthLabel').textContent = T.health.label;
-        $('healthHint').textContent = T.health.hint;
+        $('healthHint').textContent = T.health.hint || '';
         $('healthUnit').textContent = T.health.unit;
         $('heightLabel').textContent = T.height.label;
-        heightUnit.textContent = T.height.unitPercent;
         modePercent.textContent = T.height.unitPercent;
         modeMoon.textContent = T.height.unitMoon;
         modePercent.title = T.height.modePercentTitle;
@@ -41,22 +40,32 @@
         $('mouthUnit').textContent = T.mouth.unit;
         $('manualLabel').textContent = T.mouth.manualLabel;
         $('calcBtn').textContent = T.button;
-        $('footer').textContent = T.footer;
+        $('footer').textContent = T.footer || '';
         $('footer').hidden = !T.footer;
     }
 
+    // ---------- Числа с поддержкой запятой ----------
+    function parseLocaleFloat(str) {
+        if (typeof str !== 'string') return NaN;
+        return parseFloat(str.trim().replace(',', '.'));
+    }
+
     // ---------- Даты ----------
+    function formatDateTime(date) {
+        const hh = String(date.getHours()).padStart(2, '0');
+        const mm = String(date.getMinutes()).padStart(2, '0');
+        return date.getDate() + ' ' + T.months[date.getMonth()] + ' ' + T.at + ' ' + hh + ':' + mm;
+    }
+    function getStartDate() { return formatDateTime(new Date()); }
     function getEndDate(hours) {
-        const now = new Date();
-        now.setMinutes(now.getMinutes() + Math.round(hours * 60));
-        const hh = String(now.getHours()).padStart(2, '0');
-        const mm = String(now.getMinutes()).padStart(2, '0');
-        return now.getDate() + ' ' + T.months[now.getMonth()] + ' ' + T.at + ' ' + hh + ':' + mm;
+        const d = new Date();
+        d.setMinutes(d.getMinutes() + Math.round(hours * 60));
+        return formatDateTime(d);
     }
 
     // ---------- Рост с учётом режима ----------
     function getHeightPercent() {
-        const raw = parseFloat(heightInput.value);
+        const raw = parseLocaleFloat(heightInput.value);
         if (isNaN(raw)) return NaN;
         return currentMode === 'percent' ? raw : moonToPercent(Math.round(raw));
     }
@@ -72,22 +81,37 @@
         }
     }
 
-    function setMode(mode) {
-        if (mode === currentMode) return;
-        const v = parseFloat(heightInput.value);
+    // Настраивает атрибуты поля роста под режим: в лунах разрешена запятая/точка,
+    // поэтому это текстовое поле, а не number.
+    function configureHeightInput(mode) {
         if (mode === 'percent') {
-            heightInput.value = isNaN(v) ? 45 : moonToPercent(Math.round(v));
+            heightInput.type = 'number';
             heightInput.min = 45; heightInput.max = 100; heightInput.step = 1;
+            heightInput.removeAttribute('inputmode');
+            heightInput.placeholder = '';
             heightUnit.textContent = T.height.unitPercent;
         } else {
-            heightInput.value = isNaN(v) ? 0 : percentToMoons(v);
-            heightInput.min = 0; heightInput.max = 250; heightInput.step = 1;
+            heightInput.type = 'text';
+            heightInput.setAttribute('inputmode', 'decimal');
+            heightInput.removeAttribute('min'); heightInput.removeAttribute('max'); heightInput.removeAttribute('step');
+            heightInput.placeholder = '44' + T.height.decimalSeparator + '3';
             heightUnit.textContent = T.height.unitMoon;
         }
         modePercent.classList.toggle('active', mode === 'percent');
         modeMoon.classList.toggle('active', mode === 'moon');
         modePercent.setAttribute('aria-pressed', mode === 'percent');
         modeMoon.setAttribute('aria-pressed', mode === 'moon');
+    }
+
+    function setMode(mode) {
+        if (mode === currentMode) return;
+        const v = parseLocaleFloat(heightInput.value);
+        if (mode === 'percent') {
+            heightInput.value = isNaN(v) ? 45 : moonToPercent(Math.round(v));
+        } else {
+            heightInput.value = isNaN(v) ? 0 : percentToMoons(v);
+        }
+        configureHeightInput(mode);
         currentMode = mode;
         updateAutoMouth();
     }
@@ -96,7 +120,7 @@
     function showError(text) { resultDiv.innerHTML = '<span class="error">' + text + '</span>'; }
 
     function calculate() {
-        const health = parseFloat(healthInput.value);
+        const health = parseLocaleFloat(healthInput.value);
         const heightPercent = getHeightPercent();
         const mouth = parseInt(mouthInput.value, 10);
 
@@ -114,10 +138,17 @@
             const hoursStr = Number.isInteger(r.hours) ? r.hours.toString() : r.hours.toFixed(1);
             const note = T.perItem.replace('{each}', r.each.toFixed(2)).replace('{total}', r.total.toFixed(2));
             resultDiv.innerHTML =
-                '<span class="success">' + T.wearPrefix + ' <strong>' + r.count + ' ' + plural(r.count, T.forms.item) +
-                '</strong> <strong>' + hoursStr + ' ' + plural(r.hours, T.forms.hour) + '</strong>.' +
-                '<br>' + T.takeOff + ' <strong>' + getEndDate(r.hours) + '</strong>' +
-                '<br><span class="note">' + note + '</span></span>';
+                '<div class="success">' +
+                    '<p class="result-line">' + T.wearVerb +
+                        ' <span class="chip">' + r.count + ' ' + plural(r.count, T.forms.item) + '</span> ' +
+                        T.wearOn + ' <span class="chip">' + hoursStr + ' ' + plural(r.hours, T.forms.hour) + '</span>.' +
+                    '</p>' +
+                    '<dl class="result-rows">' +
+                        '<div class="result-row"><dt>' + T.putOnLabel + '</dt><dd>' + getStartDate() + '</dd></div>' +
+                        '<div class="result-row result-row--accent"><dt>' + T.takeOff + '</dt><dd>' + getEndDate(r.hours) + '</dd></div>' +
+                    '</dl>' +
+                    '<p class="note">' + note + '</p>' +
+                '</div>';
         } else {
             const text = T.cannotHeal
                 .replace('{health}', health.toFixed(1))
@@ -145,6 +176,7 @@
 
     // ---------- Запуск ----------
     fillTexts();
+    configureHeightInput(currentMode);
     resultDiv.innerHTML = '<span class="placeholder">' + T.placeholder + '</span>';
     updateAutoMouth();
     setTimeout(calculate, 80);
