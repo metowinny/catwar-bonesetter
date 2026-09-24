@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Костоправы</title>
+    <title>Время ношения костоправов</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
@@ -12,13 +12,9 @@
 <body>
 <div class="page">
 
-    <!-- Левая часть: название, описание механики и горы. Картинка: images/emblem.png -->
     <aside class="scene">
         <div class="scene-text">
-            <div class="emblem" id="emblemBox">
-                <img src="images/emblem.png" alt="Эмблема фракции" onerror="this.parentNode.hidden = true" />
-            </div>
-            <h1 id="title">Костоправы</h1>
+            <h1 id="title">Лечение открытых переломов</h1>
             <p class="tagline" id="tagline"></p>
             <p class="description" id="description"></p>
             <p class="thanks" id="thanks"></p>
@@ -33,11 +29,10 @@
         </svg>
     </aside>
 
-    <!-- Правая часть: поля и результат -->
     <main class="panel">
         <div class="grid">
             <div class="field">
-                <label for="healthInput"><span id="healthLabel">Здоровье</span> <span class="hint" id="healthHint"></span></label>
+                <label for="healthInput"><span id="healthLabel">Процент переломов</span> <span class="hint" id="healthHint"></span></label>
                 <div class="input-row">
                     <input type="number" id="healthInput" min="0" max="100" step="0.1" value="30" />
                     <span class="unit" id="healthUnit">%</span>
@@ -45,13 +40,13 @@
             </div>
 
             <div class="field">
-                <label for="heightInput" id="heightLabel">Рост</label>
+                <label for="heightInput" id="heightLabel">Рост и луны</label>
                 <div class="input-row">
                     <input type="number" id="heightInput" min="45" max="100" step="1" value="75" />
                     <span class="unit" id="heightUnit">%</span>
                     <span class="mode-toggle">
                         <button type="button" class="mode-btn active" id="modePercent" aria-pressed="true">%</button>
-                        <button type="button" class="mode-btn" id="modeMoon" aria-pressed="false">☾</button>
+                        <button type="button" class="mode-btn" id="modeMoon" aria-pressed="false">❍</button>
                     </span>
                 </div>
             </div>
@@ -64,7 +59,7 @@
                 </div>
                 <div class="checkbox-wrap">
                     <input type="checkbox" id="manualCheck" />
-                    <label for="manualCheck" id="manualLabel">Ввести самому</label>
+                    <label for="manualCheck" id="manualLabel">Ввести вручную</label>
                 </div>
             </div>
         </div>
@@ -75,8 +70,6 @@
     </main>
 
 </div>
-
-<!-- Порядок важен: данные -> логика -> тексты -> интерфейс -->
 <script src="js/data.js"></script>
 <script src="js/calc.js"></script>
 <script src="js/config.js"></script>
