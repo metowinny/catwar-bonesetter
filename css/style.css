@@ -30,7 +30,7 @@ body {
 }
 
 .page {
-    display: grid; grid-template-columns: 420px 580px;
+    display: grid; grid-template-columns: 420px 460px;
     width: fit-content; max-width: 100%;
     background: var(--paper);
     border-radius: 26px; overflow: hidden;
@@ -61,22 +61,22 @@ h1 { font-family: var(--font-title); font-size: 32px; line-height: 1.15; text-wr
 .thanks a:hover { color: #fff; }
 
 /* ----- панель (правая часть) ----- */
-.panel { display: flex; flex-direction: column; justify-content: center; padding: 40px 36px; }
-.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px 20px; margin-bottom: 28px; align-items: start; }
+.panel { display: flex; flex-direction: column; justify-content: center; padding: 40px 32px; }
 
-/* подписи резервируют по 2 строки и прижаты вниз — поля ввода всегда на одной линии */
-.field > label { display: flex; align-items: flex-end; min-height: 34px; margin-bottom: 6px; font-size: 14px; line-height: 1.2; font-weight: 800; color: var(--navy); }
-.field-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; min-height: 34px; margin-bottom: 6px; }
-.field-head label { line-height: 1.2; font-size: 14px; font-weight: 800; color: var(--navy); }
-.hint { margin-left: 4px; font-weight: 600; color: var(--grey); }
-.hint-under { margin-top: 8px; max-width: 190px; font-size: 12.5px; line-height: 1.4; font-weight: 600; color: var(--grey); }
+/* Три поля — единый компактный формат: подпись, число + единица, подсказка под ним.
+   Ширина поля меняется в .field, отступ между полями — в .grid (gap). */
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 20px; margin-bottom: 26px; }
+.field { width: 100%; }
 
-.input-row { display: flex; align-items: center; gap: 8px; }
-/* Все три поля ввода — строго одинакового размера. Ширину меняйте здесь: */
+.field > label { display: block; margin-bottom: 6px; font-size: 13.5px; font-weight: 800; color: var(--navy); white-space: nowrap; }
+.hint-under { margin-top: 7px; font-size: 12px; line-height: 1.4; font-weight: 600; color: var(--grey); }
+
+.input-row { display: flex; align-items: center; gap: 6px; }
+/* Число + единица — строго одинакового размера у всех трёх полей. */
 input[type="number"], input[type="text"] {
-    flex: none; width: 76px;
+    flex: none; width: 68px;
     padding: 4px 0 5px;
-    font: 800 24px var(--font-body);
+    font: 800 22px var(--font-body);
     color: var(--navy);
     background: transparent;
     border: 0;
@@ -87,16 +87,18 @@ input[type="number"], input[type="text"] {
 input[type="number"]:focus, input[type="text"]:focus { outline: none; border-bottom-color: var(--blue); }
 input[type="number"]:disabled, input[type="text"]:disabled { color: var(--grey); cursor: not-allowed; }
 input[type="text"]::placeholder { color: var(--mist); font-weight: 700; }
-.unit { min-width: 24px; font-size: 15px; font-weight: 600; color: var(--grey); }
+.unit { min-width: 20px; font-size: 14px; font-weight: 600; color: var(--grey); }
 
-.mode-toggle { display: inline-flex; flex-shrink: 0; border: 1.5px solid var(--navy); border-radius: 6px; overflow: hidden; }
-.mode-btn { padding: 3px 10px; border: 0; background: transparent; font: 700 13px var(--font-body); color: var(--navy); cursor: pointer; }
-.mode-btn:hover { background: var(--mist); }
-.mode-btn.active { background: var(--navy); color: #fff; }
-
-.checkbox-wrap { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-.checkbox-wrap input { width: 18px; height: 18px; accent-color: var(--navy); cursor: pointer; }
-.checkbox-wrap label { font-size: 14px; color: #34475d; cursor: pointer; }
+/* Единица измерения роста — сама кнопка переключения % / луны */
+button.unit-toggle {
+    appearance: none; -webkit-appearance: none;
+    border: 0; background: rgba(47, 99, 148, .12); border-radius: 7px;
+    padding: 3px 7px; margin-left: -1px;
+    font: 800 14px var(--font-body); color: var(--blue);
+    cursor: pointer; transition: background .15s, color .15s;
+}
+button.unit-toggle:hover { background: rgba(47, 99, 148, .22); color: var(--navy); }
+button.unit-toggle:active { background: rgba(47, 99, 148, .32); }
 
 .btn {
     align-self: flex-start;
@@ -126,14 +128,7 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid 
 #result .error { font-size: 15px; line-height: 1.6; color: var(--error); }
 
 .result-line { font-size: 16px; line-height: 1.7; color: var(--ink); }
-.result-line .chip {
-    display: inline-block; padding: 2px 10px; margin: 0 1px;
-    background: rgba(47, 99, 148, .1);
-    color: var(--navy);
-    border-radius: 6px;
-    font-weight: 800;
-    white-space: nowrap;
-}
+.result-line strong { font-weight: 800; color: var(--navy); white-space: nowrap; }
 
 .result-rows { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--mist); display: grid; gap: 8px; }
 .result-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; font-size: 15px; }
@@ -147,16 +142,16 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid 
 [hidden] { display: none !important; }
 
 /* ----- планшет: сцена становится баннером сверху ----- */
-@media (max-width: 1060px) {
+@media (max-width: 940px) {
     body { padding: 14px; }
-    .page { grid-template-columns: minmax(0, 1fr); width: 100%; max-width: 640px; border-radius: 20px; }
+    .page { grid-template-columns: minmax(0, 1fr); width: 100%; max-width: 520px; border-radius: 20px; }
     .scene-text { padding: 30px 26px 150px; }
     .panel { padding: 28px 26px 32px; }
 }
 /* ----- телефон: три поля на отдельных строках ----- */
-@media (max-width: 560px) {
-    .grid { grid-template-columns: 1fr; gap: 22px; }
-    .field > label, .field-head { min-height: 0; }
+@media (max-width: 480px) {
+    .grid { grid-template-columns: 1fr; gap: 18px; }
+    input[type="number"], input[type="text"] { width: 110px; font-size: 26px; }
     .scene-text { padding: 28px 22px 140px; }
     .panel { padding: 26px 22px 30px; }
     h1 { font-size: 30px; }

@@ -8,15 +8,21 @@
     const T = TEXTS;
 
     const healthInput = $('healthInput'), heightInput = $('heightInput'), mouthInput = $('mouthInput');
-    const manualCheck = $('manualCheck'), resultDiv = $('result'), mouthHint = $('mouthHint');
-    const heightUnit = $('heightUnit'), modePercent = $('modePercent'), modeMoon = $('modeMoon');
+    const resultDiv = $('result');
+    const healthHint = $('healthHint'), heightHint = $('heightHint'), mouthHint = $('mouthHint');
+    const heightUnit = $('heightUnit');
     let currentMode = 'moon'; // 'percent' или 'moon' — по умолчанию луны
+    let mouthManuallySet = false; // true, если пользователь сам поменял места во рту
 
     // ---------- Тексты ----------
     function plural(n, forms) {
         if (n % 10 === 1 && n % 100 !== 11) return forms[0];
         if (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) return forms[1];
         return forms[2];
+    }
+    function setHint(el, text) {
+        el.textContent = text || '';
+        el.hidden = !text;
     }
     function fillTexts() {
         document.title = T.pageTitle;
@@ -29,16 +35,11 @@
             : '';
         $('thanks').hidden = !T.thanksUrl;
         $('healthLabel').textContent = T.health.label;
-        $('healthHint').textContent = T.health.hint || '';
         $('healthUnit').textContent = T.health.unit;
+        setHint(healthHint, T.health.hint);
         $('heightLabel').textContent = T.height.label;
-        modePercent.textContent = T.height.unitPercent;
-        modeMoon.textContent = T.height.unitMoon;
-        modePercent.title = T.height.modePercentTitle;
-        modeMoon.title = T.height.modeMoonTitle;
         $('mouthLabel').textContent = T.mouth.label;
         $('mouthUnit').textContent = T.mouth.unit;
-        $('manualLabel').textContent = T.mouth.manualLabel;
         $('calcBtn').textContent = T.button;
         $('footer').textContent = T.footer || '';
         $('footer').hidden = !T.footer;
@@ -72,17 +73,13 @@
 
     function updateAutoMouth() {
         const h = getHeightPercent();
-        if (!isNaN(h) && h >= 45 && h <= 100) {
-            const auto = getMouthFromHeight(h);
-            mouthHint.textContent = '(' + T.mouth.autoHint + auto + ')';
-            if (!manualCheck.checked) mouthInput.value = auto;
-        } else {
-            mouthHint.textContent = '(' + T.mouth.autoHint + '—)';
-        }
+        let auto = null;
+        if (!isNaN(h) && h >= 45 && h <= 100) auto = getMouthFromHeight(h);
+        setHint(mouthHint, T.mouth.autoHint + (auto === null ? '—' : auto));
+        if (!mouthManuallySet && auto !== null) mouthInput.value = auto;
     }
 
-    // Настраивает атрибуты поля роста под режим: в лунах разрешена запятая/точка,
-    // поэтому это текстовое поле, а не number.
+    // Настраивает поле роста под режим (% или луны) и подпись единицы-кнопки.
     function configureHeightInput(mode) {
         if (mode === 'percent') {
             heightInput.type = 'number';
@@ -90,21 +87,21 @@
             heightInput.removeAttribute('inputmode');
             heightInput.placeholder = '';
             heightUnit.textContent = T.height.unitPercent;
+            heightUnit.title = 'Сейчас: проценты. Нажмите, чтобы ввести рост в лунах';
+            setHint(heightHint, T.height.hintPercent);
         } else {
             heightInput.type = 'text';
             heightInput.setAttribute('inputmode', 'decimal');
             heightInput.removeAttribute('min'); heightInput.removeAttribute('max'); heightInput.removeAttribute('step');
             heightInput.placeholder = '44' + T.height.decimalSeparator + '3';
             heightUnit.textContent = T.height.unitMoon;
+            heightUnit.title = 'Сейчас: луны. Нажмите, чтобы ввести рост в процентах';
+            setHint(heightHint, T.height.hintMoon);
         }
-        modePercent.classList.toggle('active', mode === 'percent');
-        modeMoon.classList.toggle('active', mode === 'moon');
-        modePercent.setAttribute('aria-pressed', mode === 'percent');
-        modeMoon.setAttribute('aria-pressed', mode === 'moon');
     }
 
-    function setMode(mode) {
-        if (mode === currentMode) return;
+    function toggleHeightMode() {
+        const mode = currentMode === 'percent' ? 'moon' : 'percent';
         const v = parseLocaleFloat(heightInput.value);
         if (mode === 'percent') {
             heightInput.value = isNaN(v) ? 45 : moonToPercent(Math.round(v));
@@ -140,8 +137,8 @@
             resultDiv.innerHTML =
                 '<div class="success">' +
                     '<p class="result-line">' + T.wearVerb +
-                        ' <span class="chip">' + r.count + ' ' + plural(r.count, T.forms.item) + '</span> ' +
-                        T.wearOn + ' <span class="chip">' + hoursStr + ' ' + plural(r.hours, T.forms.hour) + '</span>.' +
+                        ' <strong>' + r.count + ' ' + plural(r.count, T.forms.item) + '</strong> ' +
+                        T.wearOn + ' <strong>' + hoursStr + ' ' + plural(r.hours, T.forms.hour) + '</strong>.' +
                     '</p>' +
                     '<dl class="result-rows">' +
                         '<div class="result-row"><dt>' + T.putOnLabel + '</dt><dd>' + getStartDate() + '</dd></div>' +
@@ -159,12 +156,11 @@
     }
 
     // ---------- События ----------
-    modePercent.addEventListener('click', () => setMode('percent'));
-    modeMoon.addEventListener('click', () => setMode('moon'));
+    heightUnit.addEventListener('click', toggleHeightMode);
     heightInput.addEventListener('input', updateAutoMouth);
-    manualCheck.addEventListener('change', function () {
-        mouthInput.disabled = !this.checked;
-        if (this.checked) mouthInput.focus(); else updateAutoMouth();
+    mouthInput.addEventListener('input', function () {
+        mouthManuallySet = mouthInput.value !== '';
+        if (!mouthManuallySet) updateAutoMouth();
     });
     $('calcBtn').addEventListener('click', calculate);
     document.addEventListener('keydown', function (e) {

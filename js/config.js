@@ -11,9 +11,10 @@ const TEXTS = {
     thanksUrl: 'https://docs.google.com/spreadsheets/d/1fIN4iCRJMxnkJruEO6ZwELiZgUUdahIUNrvKNuMAlDw/edit?gid=1429042970#gid=1429042970',
     thanksAfter: 'с данными о лечении.',
 
-    health:     { label: 'Переломы', unit: '%' },
-    height:     { label: 'Луны', unitPercent: '%', unitMoon: '◐', modePercentTitle: 'Рост в процентах', modeMoonTitle: 'Возраст в лунах', decimalSeparator: ',' },
-    mouth:      { label: 'Базовые места', autoHint: 'обычное для указанного роста: ', unit: 'мест', manualLabel: 'Ручной ввод' },
+    // hint — необязательная маленькая подсказка под полем; '' — не показывать
+    health:     { label: 'Переломы', unit: '%', hint: '' },
+    height:     { label: 'Луны', unitPercent: '%', unitMoon: '◐', hintPercent: '', hintMoon: '', decimalSeparator: ',' },
+    mouth:      { label: 'Базовые места', autoHint: 'обычное для указанного роста: ', unit: 'мест' },
 
     button: 'Рассчитать',
     placeholder: 'Введите данные и нажмите «Рассчитать»',
