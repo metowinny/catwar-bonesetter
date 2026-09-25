@@ -11,10 +11,9 @@ const TEXTS = {
     thanksUrl: 'https://docs.google.com/spreadsheets/d/1fIN4iCRJMxnkJruEO6ZwELiZgUUdahIUNrvKNuMAlDw/edit?gid=1429042970#gid=1429042970',
     thanksAfter: 'с данными о лечении.',
 
-    // hint — необязательная маленькая подсказка под полем; '' — не показывать
-    health:     { label: 'Переломы', unit: '%', hint: '' },
-    height:     { label: 'Луны', unitPercent: '%', unitMoon: '◐', hintPercent: '', hintMoon: '', decimalSeparator: ',' },
-    mouth:      { label: 'Базовые места', autoHint: 'обычное для указанного роста: ', unit: 'мест' },
+    health:     { label: 'Переломы', unit: '%', hint: 'Если не знаете точное, введите ближайшее в большую сторону' },
+    height:     { label: 'Луны', unitPercent: '%', unitMoon: '◐', hintPercent: 'Нажмите на иконку для переключения', hintMoon: '', decimalSeparator: ',' },
+    mouth:      { label: 'Базовые места', autoHint: 'Обычное для указанного роста: ', unit: 'мест' },
 
     button: 'Рассчитать',
     placeholder: 'Введите данные и нажмите «Рассчитать»',
@@ -28,7 +27,7 @@ const TEXTS = {
     wearOn: 'на',
     putOnLabel: 'Надеть',
     takeOff: 'Снять',
-    perItem: '1 костоправ лечит {each}%, суммарный процент лечения — {total}%.',
+    perItem: '1 костоправ лечит {each}%; суммарный процент лечения — {total}%.',
     cannotHeal: 'Не удаётся вылечить {health}%.<br>' +
                 'Максимальное лечение с {mouthWord} составляет {max}%.<br>',
 
