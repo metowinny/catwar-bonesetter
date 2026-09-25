@@ -12,8 +12,8 @@ const TEXTS = {
     thanksAfter: 'с данными о лечении.',
 
     health:     { label: 'Переломы', unit: '%' },
-    height:     { label: 'Рост и луны', unitPercent: '%', unitMoon: '◐', modePercentTitle: 'Рост в процентах', modeMoonTitle: 'Возраст в лунах', decimalSeparator: ',' },
-    mouth:      { label: 'Базовые места во рту', autoHint: 'обычное для указанного роста: ', unit: 'мест', manualLabel: 'Ручной ввод' },
+    height:     { label: 'Луны', unitPercent: '%', unitMoon: '◐', modePercentTitle: 'Рост в процентах', modeMoonTitle: 'Возраст в лунах', decimalSeparator: ',' },
+    mouth:      { label: 'Базовые места', autoHint: 'обычное для указанного роста: ', unit: 'мест', manualLabel: 'Ручной ввод' },
 
     button: 'Рассчитать',
     placeholder: 'Введите данные и нажмите «Рассчитать»',
