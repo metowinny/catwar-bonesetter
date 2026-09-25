@@ -30,12 +30,11 @@
     </aside>
 
     <main class="panel">
-        <!-- Все три поля — единый формат: подпись, число + единица, необязательная подсказка под ним -->
         <div class="grid">
             <div class="field">
                 <label for="healthInput" id="healthLabel">Процент переломов</label>
                 <div class="input-row">
-                    <input type="number" id="healthInput" min="0" max="100" step="0.1" value="30" />
+                    <input type="number" id="healthInput" min="0" max="100" step="0.1" value="10" />
                     <span class="unit" id="healthUnit">%</span>
                 </div>
                 <p class="hint-under" id="healthHint"></p>
@@ -44,8 +43,7 @@
             <div class="field">
                 <label for="heightInput" id="heightLabel">Рост и луны</label>
                 <div class="input-row">
-                    <input type="text" inputmode="decimal" id="heightInput" value="12" />
-                    <!-- клик по единице переключает % / луны -->
+                    <input type="text" inputmode="decimal" id="heightInput" value="6" />
                     <button type="button" class="unit unit-toggle" id="heightUnit" aria-label="Переключить проценты и луны" title="Нажмите, чтобы переключить проценты и луны"></button>
                 </div>
                 <p class="hint-under" id="heightHint"></p>
