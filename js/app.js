@@ -33,7 +33,6 @@
         $('healthLabel').textContent = T.health.label;
         $('healthUnit').textContent = T.health.unit;
         setHint(healthHint, T.health.hint);
-        $('heightLabel').textContent = T.height.label;
         $('mouthLabel').textContent = T.mouth.label;
         $('mouthUnit').textContent = T.mouth.unit;
         $('calcBtn').textContent = T.button;
@@ -81,6 +80,7 @@
             heightUnit.textContent = T.height.unitPercent;
             heightUnit.title = 'Сейчас: проценты. Нажмите, чтобы ввести рост в лунах';
             setHint(heightHint, T.height.hintPercent);
+            $('heightLabel').textContent = T.height.labelPercent;
         } else {
             heightInput.type = 'text';
             heightInput.setAttribute('inputmode', 'decimal');
@@ -89,6 +89,7 @@
             heightUnit.textContent = T.height.unitMoon;
             heightUnit.title = 'Сейчас: луны. Нажмите, чтобы ввести рост в процентах';
             setHint(heightHint, T.height.hintMoon);
+            $('heightLabel').textContent = T.height.labelMoon;
         }
     }
 
