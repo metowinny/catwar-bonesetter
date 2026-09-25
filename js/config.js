@@ -11,7 +11,7 @@ const TEXTS = {
     thanksUrl: 'https://docs.google.com/spreadsheets/d/1fIN4iCRJMxnkJruEO6ZwELiZgUUdahIUNrvKNuMAlDw/edit?gid=1429042970#gid=1429042970',
     thanksAfter: 'с данными о лечении.',
 
-    health:     { label: 'Переломы', unit: '%', hint: 'Если не знаете точное, введите ближайшее в большую сторону' },
+    health:     { label: 'Переломы', unit: '%', hint: 'Не знаете точное — введите ближайшее' },
     height:     { labelPercent: 'Рост', labelMoon: 'Луны', unitPercent: '%', unitMoon: '◐', hintPercent: 'Нажмите на иконку для переключения', hintMoon: 'Нажмите на иконку для переключения', decimalSeparator: ',' },
     mouth:      { label: 'Базовые места', autoHint: 'Обычное для указанного роста: ', unit: 'мест' },
 
