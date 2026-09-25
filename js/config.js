@@ -13,7 +13,7 @@ const TEXTS = {
 
     health:     { label: 'Переломы', unit: '%', hint: 'Не знаете точное — введите ближайшее' },
     height:     { labelPercent: 'Рост', labelMoon: 'Луны', unitPercent: '%', unitMoon: '◐', hintPercent: 'Нажмите на иконку для переключения', hintMoon: 'Нажмите на иконку для переключения', decimalSeparator: ',' },
-    mouth:      { label: 'Базовые места', autoHint: 'Обычное для указанного роста: ', unit: 'мест' },
+    mouth:      { label: 'Базовые места', autoHint: 'Обычное для указанного роста: ', unit: 'места' },
 
     button: 'Рассчитать',
     placeholder: 'Введите данные и нажмите «Рассчитать»',
