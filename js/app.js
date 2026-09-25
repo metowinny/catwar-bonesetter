@@ -1,6 +1,3 @@
-/* =====================================================================
-   ИНТЕРФЕЙС: подставляет тексты из config.js, читает поля, показывает результат.
-   ===================================================================== */
 (function () {
     'use strict';
 
@@ -11,10 +8,9 @@
     const resultDiv = $('result');
     const healthHint = $('healthHint'), heightHint = $('heightHint'), mouthHint = $('mouthHint');
     const heightUnit = $('heightUnit');
-    let currentMode = 'moon'; // 'percent' или 'moon' — по умолчанию луны
-    let mouthManuallySet = false; // true, если пользователь сам поменял места во рту
+    let currentMode = 'moon'; 
+    let mouthManuallySet = false; 
 
-    // ---------- Тексты ----------
     function plural(n, forms) {
         if (n % 10 === 1 && n % 100 !== 11) return forms[0];
         if (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) return forms[1];
@@ -45,13 +41,11 @@
         $('footer').hidden = !T.footer;
     }
 
-    // ---------- Числа с поддержкой запятой ----------
     function parseLocaleFloat(str) {
         if (typeof str !== 'string') return NaN;
         return parseFloat(str.trim().replace(',', '.'));
     }
 
-    // ---------- Даты ----------
     function formatDateTime(date) {
         const hh = String(date.getHours()).padStart(2, '0');
         const mm = String(date.getMinutes()).padStart(2, '0');
@@ -64,11 +58,10 @@
         return formatDateTime(d);
     }
 
-    // ---------- Рост с учётом режима ----------
     function getHeightPercent() {
         const raw = parseLocaleFloat(heightInput.value);
         if (isNaN(raw)) return NaN;
-        return currentMode === 'percent' ? raw : moonToPercent(Math.round(raw));
+        return currentMode === 'percent' ? raw : moonToPercent(Math.floor(raw));
     }
 
     function updateAutoMouth() {
@@ -79,7 +72,6 @@
         if (!mouthManuallySet && auto !== null) mouthInput.value = auto;
     }
 
-    // Настраивает поле роста под режим (% или луны) и подпись единицы-кнопки.
     function configureHeightInput(mode) {
         if (mode === 'percent') {
             heightInput.type = 'number';
@@ -104,7 +96,7 @@
         const mode = currentMode === 'percent' ? 'moon' : 'percent';
         const v = parseLocaleFloat(heightInput.value);
         if (mode === 'percent') {
-            heightInput.value = isNaN(v) ? 45 : moonToPercent(Math.round(v));
+            heightInput.value = isNaN(v) ? 45 : moonToPercent(Math.floor(v));
         } else {
             heightInput.value = isNaN(v) ? 0 : percentToMoons(v);
         }
@@ -113,7 +105,6 @@
         updateAutoMouth();
     }
 
-    // ---------- Расчёт и вывод ----------
     function showError(text) { resultDiv.innerHTML = '<span class="error">' + text + '</span>'; }
 
     function calculate() {
@@ -155,7 +146,6 @@
         }
     }
 
-    // ---------- События ----------
     heightUnit.addEventListener('click', toggleHeightMode);
     heightInput.addEventListener('input', updateAutoMouth);
     mouthInput.addEventListener('input', function () {
@@ -170,7 +160,6 @@
         }
     });
 
-    // ---------- Запуск ----------
     fillTexts();
     configureHeightInput(currentMode);
     resultDiv.innerHTML = '<span class="placeholder">' + T.placeholder + '</span>';
