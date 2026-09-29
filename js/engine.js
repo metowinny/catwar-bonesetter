@@ -1,3 +1,5 @@
+// привет
+
 const PLAN_HEIGHTS = Object.keys(WEAR_PLANS).map(Number).sort((a, b) => a - b);
 
 function slotsForHeight(height) {
